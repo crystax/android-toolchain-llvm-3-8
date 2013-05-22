@@ -112,6 +112,7 @@ cross-compile-build-tools:
 	  cd BuildTools ; \
 	  unset CFLAGS ; \
 	  unset CXXFLAGS ; \
+	  unset LDFLAGS ; \
 	  AR=$(BUILD_AR) ; \
 	  AS=$(BUILD_AS) ; \
 	  LD=$(BUILD_LD) ; \

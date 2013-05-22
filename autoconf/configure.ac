@@ -455,7 +455,9 @@ case "$llvm_cv_target_arch" in
 esac
 
 dnl Define a substitution, ARCH, for the target architecture
-AC_SUBST(ARCH,$llvm_cv_target_arch)
+if test -z "$ARCH" ; then
+  AC_SUBST(ARCH,$llvm_cv_target_arch)
+fi
 AC_SUBST(LLVM_NATIVE_ARCH,$LLVM_NATIVE_ARCH)
 
 dnl Determine what our host architecture.

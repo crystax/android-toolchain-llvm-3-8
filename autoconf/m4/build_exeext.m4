@@ -18,7 +18,10 @@ else
      fi
   fi
   test -z "$BUILD_CC" && AC_MSG_ERROR([no acceptable cc found in \$PATH])
-  ac_build_link='${BUILD_CC-cc} -o conftest $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&AS_MESSAGE_LOG_FD'
+  test -z "$CFLAGS_FOR_BUILD" && CFLAGS_FOR_BUILD="$CFLAGS $CPPFLAGS"
+  test -z "$LDFLAGS_FOR_BUILD" && LDFLAGS_FOR_BUILD="$LDFLAGS"
+  ac_build_link='${BUILD_CC-cc} -o conftest $CFLAGS_FOR_BUILD $LDFLAGS_FOR_BUILD conftest.$ac_ext $LIBS 1>&AS_MESSAGE_LOG_FD'
+
   rm -f conftest*
   echo 'int main () { return 0; }' > conftest.$ac_ext
   ac_cv_build_exeext=
