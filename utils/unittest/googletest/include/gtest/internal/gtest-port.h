@@ -523,11 +523,11 @@
 #ifndef GTEST_HAS_CLONE
 // The user didn't tell us, so we need to figure it out.
 
-# if GTEST_OS_LINUX && !defined(__ia64__)
+# if GTEST_OS_LINUX && !defined(__ia64__) && !defined(__ANDROID__)
 #  define GTEST_HAS_CLONE 1
 # else
 #  define GTEST_HAS_CLONE 0
-# endif  // GTEST_OS_LINUX && !defined(__ia64__)
+# endif  // GTEST_OS_LINUX && !defined(__ia64__) && !defined(__ANDROID__)
 
 #endif  // GTEST_HAS_CLONE
 
