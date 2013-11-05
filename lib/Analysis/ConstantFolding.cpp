@@ -37,6 +37,11 @@
 #include <cerrno>
 #include <cmath>
 
+// NDK fenv.h implementation has vmrs, vmsr that -msoft-float cannot compile.
+#if defined(__ANDROID__) && defined(__arm__) && defined(__SOFTFP__)
+#undef HAVE_FENV_H
+#endif
+
 #ifdef HAVE_FENV_H
 #include <fenv.h>
 #endif
