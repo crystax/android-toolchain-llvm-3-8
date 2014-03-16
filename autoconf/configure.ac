@@ -1648,8 +1648,8 @@ else
     AC_MSG_WARN([specified python ($PYTHON) is not usable, searching path])
   fi
 
-  AC_PATH_PROG([PYTHON], [python python2 python27],
-               [AC_MSG_RESULT([not found])
+  AC_PATH_PROGS([PYTHON], [python27 python2 python],
+                [AC_MSG_RESULT([not found])
                 AC_MSG_ERROR([could not find python 2.7 or higher])])
 fi
 
