@@ -20,6 +20,26 @@ AC_DEFUN([AC_LINK_GET_VERSION],
 ])
 
 #
+# Determine if the system can handle the --gc-sections option being passed to the linker.
+#
+# This macro is specific to LLVM.
+#
+AC_DEFUN([AC_LINK_USE_GC_SECTIONS],
+[AC_CACHE_CHECK([for compiler -Wl,--gc-sections option],[llvm_cv_link_use_gc_sections],
+[ AC_LANG_PUSH([C])
+  oldcflags="$CFLAGS"
+  CFLAGS="$CFLAGS -Wl,--gc-sections"
+  AC_LINK_IFELSE([AC_LANG_PROGRAM([[]],[[]])],
+    [llvm_cv_link_use_gc_sections=yes],[llvm_cv_link_use_gc_sections=no])
+  CFLAGS="$oldcflags"
+  AC_LANG_POP([C])
+])
+if test "$llvm_cv_link_use_gc_sections" = yes ; then
+  AC_SUBST($1,[-Wl,--gc-sections])
+  fi
+])
+
+#
 # Determine if the system can handle the -R option being passed to the linker.
 #
 # This macro is specific to LLVM.

@@ -40,6 +40,10 @@ ifeq ($(USE_INTEL_JITEVENTS), 1)
   PARALLEL_DIRS += llvm-jitlistener
 endif
 
+ifeq ($(LLVM_CROSS_COMPILING),1)
+  PARALLEL_DIRS := llc
+endif
+
 # Let users override the set of tools to build from the command line.
 ifdef ONLY_TOOLS
   OPTIONAL_PARALLEL_DIRS :=

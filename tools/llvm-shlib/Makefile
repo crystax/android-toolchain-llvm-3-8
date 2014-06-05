@@ -38,6 +38,22 @@ SharedLibraries := $(wildcard $(LibDir)/libLLVM*$(SHLIBEXT))
 ExcludeFromLibLlvm := $(basename $(SharedLibraries)).a %/libLLVMTableGen.a
 IncludeInLibLlvm := $(filter-out $(ExcludeFromLibLlvm), $(Archives))
 LLVMLibsOptions := $(IncludeInLibLlvm:$(LibDir)/lib%.a=-l%)
+ifeq ($(LLVM_CROSS_COMPILING),1)
+  # Don't link these for saving binary size about 1MB
+  LLVMLibsOptions := $(filter-out -lLLVMArchive, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMDebugInfo, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMExecutionEngine, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMInstrumentation, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMInterpreter, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMipo, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMJIT, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMLinker, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMMCDisassembler, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMMCJIT, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMRuntimeDyld, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMVectorize, $(LLVMLibsOptions))
+  LLVMLibsOptions := $(filter-out -lLLVMWrap, $(LLVMLibsOptions))
+endif
 LLVMLibsPaths   := $(IncludeInLibLlvm)
 
 $(LibName.SO): $(LLVMLibsPaths)
