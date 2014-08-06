@@ -720,8 +720,15 @@ DIE *DwarfUnit::getOrCreateTypeDIE(const MDNode *TyNode) {
     return nullptr;
 
   auto *Ty = cast<DIType>(TyNode);
+  /*
   assert(Ty == resolve(Ty->getRef()) &&
          "type was not uniqued, possible ODR violation.");
+  */
+  // Consider there is one metadata to point to a class in each bitcode, after linking,
+  // the big bitcodes has several metadata to the class (but they are not fully same on fields,
+  // so they cannot be merged). However, the contents are actually the same, i.e., the class.
+  // We unique the type. This is a noop if the type has no unique identifier.
+  Ty = resolve(Ty->getRef());
 
   // DW_TAG_restrict_type is not supported in DWARF2
   if (Ty->getTag() == dwarf::DW_TAG_restrict_type && DD->getDwarfVersion() <= 2)
