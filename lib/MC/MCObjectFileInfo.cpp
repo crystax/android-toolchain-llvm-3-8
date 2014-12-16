@@ -278,6 +278,8 @@ void MCObjectFileInfo::initMachOMCObjectFileInfo(Triple T) {
 }
 
 void MCObjectFileInfo::initELFMCObjectFileInfo(Triple T) {
+  bool writable_gcc_except_table = false;
+
   switch (T.getArch()) {
   case Triple::mips:
   case Triple::mipsel:
@@ -369,6 +371,29 @@ void MCObjectFileInfo::initELFMCObjectFileInfo(Triple T) {
                     dwarf::DW_EH_PE_sdata4;
     // We don't support PC-relative LSDA references in GAS so we use the default
     // DW_EH_PE_absptr for those.
+    if (TT.getEnvironment() == llvm::Triple::Android) {
+      // To match GCC/mips behavior in gcc/except.c as below, to avoid
+      // .../ld: warning: creating a DT_TEXTREL in a shared object.
+      //
+      // switch_to_exception_section (const char * ARG_UNUSED (fnname))
+      // {
+      //   ....
+      // 	  if (EH_TABLES_CAN_BE_READ_ONLY)
+      // 	    {
+      // 	      int tt_format =
+      // 		ASM_PREFERRED_EH_DATA_FORMAT (/*code=*/0, /*global=*/1);  # DW_EH_PE_indirect which is 0x80
+      // 	      flags = ((! flag_pic
+      // 			|| ((tt_format & 0x70) != DW_EH_PE_absptr/*0x00*/
+      // 			    && (tt_format & 0x70) != DW_EH_PE_aligned/*0x50*/))
+      // 		       ? 0 : SECTION_WRITE);
+      // 	    }
+      // 	  else
+      // 	    flags = SECTION_WRITE;
+      //
+      // FIXME: Check PIC (default in Android, though)
+      //
+      writable_gcc_except_table = true;
+    }
     break;
   case Triple::ppc64:
   case Triple::ppc64le:
@@ -481,7 +506,7 @@ void MCObjectFileInfo::initELFMCObjectFileInfo(Triple T) {
   // runtime hit for C++ apps.  Either the contents of the LSDA need to be
   // adjusted or this should be a data section.
   LSDASection = Ctx->getELFSection(".gcc_except_table", ELF::SHT_PROGBITS,
-                                   ELF::SHF_ALLOC);
+                                   ELF::SHF_ALLOC | (writable_gcc_except_table ? ELF::SHF_WRITE : 0));
 
   COFFDebugSymbolsSection = nullptr;
 
