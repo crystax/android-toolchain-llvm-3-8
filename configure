@@ -787,6 +787,8 @@ build_os
 build_vendor
 build_cpu
 build
+LLDB_ENABLE_DEBUGSERVER
+ENABLE_LLDB
 LLVM_HAS_POLLY
 ENABLE_POLLY
 subdirs
@@ -849,6 +851,8 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_polly
+enable_lldb
+enable_debugserver
 enable_libcpp
 enable_compiler_version_checks
 enable_cxx1y
@@ -1538,6 +1542,8 @@ Optional Features:
   --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-polly          Use polly if available (default is YES)
+  --enable-lldb           Build LLDB (default is YES)
+  --enable-debugserver    Build LLDB debugserver binary (default is YES)
   --enable-libcpp         Use libc++ if available (default is NO)
   --enable-compiler-version-checks
                           Check the version of the host compiler (default is
@@ -3932,6 +3938,38 @@ if (test -d ${srcdir}/tools/polly) && (test $ENABLE_POLLY -eq 1) ; then
   subdirs="$subdirs tools/polly"
 
 fi
+
+# Check whether --enable-lldb was given.
+if test "${enable_lldb+set}" = set; then :
+  enableval=$enable_lldb;
+else
+  enableval=yes
+fi
+
+
+case "$enableval" in
+  yes) ENABLE_LLDB=1
+ ;;
+  no)  ENABLE_LLDB=0
+ ;;
+  *) as_fn_error $? "Invalid setting for --enable-lldb. Use \"yes\" or \"no\"" "$LINENO" 5 ;;
+esac
+
+# Check whether --enable-debugserver was given.
+if test "${enable_debugserver+set}" = set; then :
+  enableval=$enable_debugserver;
+else
+  enableval=yes
+fi
+
+
+case "$enableval" in
+  yes) LLDB_ENABLE_DEBUGSERVER=1
+ ;;
+  no)  LLDB_ENABLE_DEBUGSERVER=0
+ ;;
+  *) as_fn_error $? "Invalid setting for --enable-debugserver. Use \"yes\" or \"no\"" "$LINENO" 5 ;;
+esac
 
 
 # Make sure we can run config.sub.
