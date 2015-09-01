@@ -19,6 +19,15 @@
 #else
 // One of TLI_DEFINE_ENUM/STRING are defined.
 
+#if defined(_WIN32)
+#ifdef fseeko
+#undef fseeko
+#endif
+#ifdef ftello
+#undef ftello
+#endif
+#endif /* _WIN32 */
+
 #if defined(TLI_DEFINE_ENUM)
 #define TLI_DEFINE_ENUM_INTERNAL(enum_variant) enum_variant,
 #define TLI_DEFINE_STRING_INTERNAL(string_repr)
